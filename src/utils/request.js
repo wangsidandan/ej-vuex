@@ -109,7 +109,9 @@ export function get (url,params) {
  * ids=1&ids=2
 */
 export function post_array(url,data){
-  return service.post(url,qs.stringify(data,{arrayFormat:"repeat"}),{
+  let ids=qs.stringify(data,{arrayFormat:"repeat"});
+  console.log("ids----",ids);
+  return service.post(url,ids,{
     timeout:10000,
     headers: { 
       'X-Requested-With': 'XMLHttpRequest',

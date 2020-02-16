@@ -4,9 +4,10 @@ import {get,post,post_array} from '@/utils/request'
 export default{
     namespaced:true,
     state:{
+        title:"添加信息",
         visible:false,//控制表单，未来控制模态框
         customers:[], //遍历需要用到的数据，初始化为null,通过突变改变值
-        loading:false
+        loading:false   
     },
     mutations:{
         showModal(state){
@@ -25,6 +26,9 @@ export default{
         refreshCustomers(state,customers){
             console.log("state=>",state);
             state.customers=customers;
+        },
+        setTitle(state,title){
+            state.title=title;
         }
     },
     actions:{
@@ -69,6 +73,12 @@ export default{
             //重新调用findAllCustomers刷新页面
             dispatch("findAllCustomers");
             //提示成功，让Vue去做，并且删除后才能提示
+            return response;
+        },
+        async batchDeleteCustomerByIds(context,ids){
+            //传递json参数
+            let response = await post_array("/customer/batchDelete",{ids});
+            context.dispatch("findAllCustomers");
             return response;
         }
     },

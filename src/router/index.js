@@ -118,6 +118,13 @@ export const asyncRoutes = [
         component: () => import('@/pages/customer/List'),
         name: '客户',
         meta: { title: '客户管理', icon: 'user'}
+      },
+      {
+        path: 'detail',
+        hidden:true,
+        component: () => import('@/pages/customer/Detail'),
+        name: '客户',
+        meta: { title: '详情页面', icon: 'user'}
       }
     ]
   },
