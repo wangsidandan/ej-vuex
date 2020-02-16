@@ -111,7 +111,7 @@ export function get (url,params) {
 export function post_array(url,data){
   return service.post(url,qs.stringify(data,{arrayFormat:"repeat"}),{
     timeout:10000,
-    headers: {
+    headers: { 
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
