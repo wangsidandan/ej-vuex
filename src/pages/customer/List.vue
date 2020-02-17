@@ -20,12 +20,26 @@
           <el-table-column fixed="right" label="操作" width="100px">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="toEditHandler(scope.row)" class="el-icon-edit"></el-button>
-              <el-button type="text" size="small" @click="toDeleteHandler(scope.row.id)" class="el-icon-delete"></el-button>
+              <el-button type="text" size="small" @click="toDeleteHandler(scope.row)" class="el-icon-delete"></el-button>
               <el-button @click="toDetailsHandler(scope.row)" type="text" size="small" class="el-icon-info"></el-button>
             </template>
         </el-table-column>
     </el-table>
         <!-- /表单数据 -->
+        <!-- 分页 -->
+            <div class="block">
+              <span class="demonstration">完整功能</span>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage4"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="pages"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+              ></el-pagination>
+            </div>
+          <!-- /分页 -->
       </div>
       <!-- 添加/编辑模态框 -->
       <!-- 模态框关闭的另一种方式 @close="dialogCloseHandler"-->
@@ -62,7 +76,10 @@ export default {
         return{
             ids:[],
             form:{},
-            //添加规则，并在表单属性关联   
+            //添加规则，并在表单属性关联 
+            pages:0,  
+            total:5,
+            pageBean:{},
             rules:{
               username: [
                 { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -72,7 +89,11 @@ export default {
                 { required: true, message: '请输入电话号码', trigger: 'blur' }
                 //{ min: 3, max: 5, message: '长度在为11', trigger: 'blur' }
               ]
-            }
+            },
+            currentPage1: 5,
+            currentPage2: 5,
+            currentPage3: 5,
+            currentPage4: 4
         }
     },
     //表格动态数据的定义
@@ -87,7 +108,12 @@ export default {
     },
     created(){
         //映射机制
-        this.findAllCustomers();
+        this.findAllCustomers().then((res)=>{
+          // this.pageBean=res.data;
+           console.log("pageBean--------",this.pageBean);
+           this.total=res.data.total;
+           this.pages=res.data.pages;
+        });
     },
     methods:{
         ...mapActions("customer",["findAllCustomers","saveOrUpdateCustomer","deleteCustomerById","batchDeleteCustomerByIds"]),
@@ -95,7 +121,9 @@ export default {
         //普通方法
         toDetailsHandler(customer){
           //跳转到详情页面  {path:'/customer/detail'} 在路由中配置
-            this.$router.push({path:'/customer/detail',query:{id:customer.id}});
+          //router是路由器 route 是当前路由 #后面
+          console.log("cusotmer",customer);
+            this.$router.push({path:'/customer/detail',query:{customer}});
         },
         toDeleteHandler(id){
           this.deleteCustomerById(id).then((response)=>{
@@ -147,6 +175,13 @@ export default {
       handleSelectionChange(val){
        // console.log("row",row);  
         this.ids=val.map(item=>item.id); //只要单独映射id
+      },
+      //分页配置
+       handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
       }
 
     }

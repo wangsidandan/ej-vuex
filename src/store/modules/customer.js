@@ -1,11 +1,10 @@
 import request from '@/utils/request'
-import {get,post,post_array} from '@/utils/request'
-
+import {get,post,post_array } from '@/utils/request'
 export default{
     namespaced:true,
     state:{
         title:"添加信息",
-        visible:false,//控制表单，未来控制模态框
+        visible:false, //控制表单，未来控制模态框
         customers:[], //遍历需要用到的数据，初始化为null,通过突变改变值
         loading:false   
     },
@@ -34,17 +33,19 @@ export default{
     actions:{
         //asyna  await 异步操作同步化
         //context=({state,commit,dispatch,getters})
+        // eslint-disable-next-line space-before-blocks
         async findAllCustomers({commit}){
             //console.log("context->",context)
             //查询所有顾客信息
             commit("beginning");
-            let response= await get("/customer/findAll");
+            let res= await get("/customer/pageFindAll");
             //将顾客信息设置到state.customers中
-            //console.log(response.data); 
-            commit("refreshCustomers",response.data);//调用突变中的方法，传实际值
+            console.log(res.data); 
+            commit("refreshCustomers",res.data.list);//调用突变中的方法，传实际值
             setTimeout(()=>{
                 commit("ending");
-            },1000)
+            },1000);
+            return res;
 
         },
         async saveOrUpdateCustomer({dispatch,commit},customer){
